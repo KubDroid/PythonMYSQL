@@ -14,6 +14,7 @@ port=config('MYSQL_PORT')
 
 # importaciones
 import mysql.connector
+from mysql.connector import Error
 
 # Conectar a la base de datos
 try: 
@@ -21,10 +22,13 @@ try:
                                          password=password,
                                          host=host, 
                                          db=db,
-                                         port=port)
-    print("Conexión correcta \n"  + "Host:" + host + " " + "Port:" + port)  
-    infoserver = conexiondb.get_server_info()
-    print("Info del servidor:",infoserver)
+                                         port=port
+                                         )
+    
+    if conexiondb.is_connected():    
+        print("Conexión correcta \n"  + "Host:" + host + " " + "Port:" + port)  
+        infoserver = conexiondb.get_server_info()
+        print("Info del servidor:",infoserver)
      
 
 except mysql.connector.Error as e:
@@ -33,6 +37,6 @@ except mysql.connector.Error as e:
  
 # Cerrar Conección a la base de datos
 finally:
-    conexiondb.is_connected()
-    conexiondb.close() # Se cerro la conexión as la BD.
-    print("La conexión ha finalizado.")
+    if conexiondb.is_connected():
+        conexiondb.close() # Se cerro la conexión as la BD.
+        print("La conexión ha finalizado.")

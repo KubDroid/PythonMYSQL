@@ -14,31 +14,37 @@ port=config('MYSQL_PORT')
 
 # importaciones
 import mysql.connector
+from mysql.connector import Error
 
 # Conectar a la base de datos
 try: 
     conexiondb = mysql.connector.connect(user=user,
                                          password=password,
                                          host=host, 
-                                         port=port)
-    print("Conexión correcta \n"  + "Host:" + host + " " + "Port:" + port)  
+                                         db=db,
+                                         port=port
+                                         )
+    
+    if conexiondb.is_connected():    
+        print("Conexión correcta \n"  + "Host:" + host + " " + "Port:" + port)  
+        infoserver = conexiondb.get_server_info()
+        print("Info del servidor:",infoserver)
 
-     
+
+# creación del cursor       
+        cursor = conexiondb.cursor()
+        cursor.execute("show databases;")
+        for bd in cursor: # type: ignore
+            print(bd)
+
 
 except mysql.connector.Error as e:
-	print("No puedo conectar a la base de datos:",e)
+        print("No puedo conectar a la base de datos:",e)
 	
-
-
-cursor = conexiondb.cursor()
-cursor.execute("show databases")
-
-for bd in cursor: # type: ignore
-    print(bd)
-    
-    
+ 
 # Cerrar Conección a la base de datos
 finally:
-    conexiondb.is_connected()
-    conexiondb.close() # Se cerro la conexión as la BD.
-    print("La conexión ha finalizado.")
+    if conexiondb.is_connected():
+        conexiondb.close() # Se cerro la conexión as la BD.
+        print("La conexión ha finalizado.")   
+ 
