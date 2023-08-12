@@ -17,7 +17,7 @@ import mysql.connector
 
 # Conectar a la base de datos
 try: 
-    conexionDb = mysql.connector.connect(user=user,
+    conexiondb = mysql.connector.connect(user=user,
                                          password=password,
                                          host=host, 
                                          port=port)
@@ -30,7 +30,7 @@ except mysql.connector.Error as e:
 	
 
 
-cursor = conexionDb.cursor()
+cursor = conexiondb.cursor()
 cursor.execute("show databases")
 
 for bd in cursor: # type: ignore
@@ -38,4 +38,7 @@ for bd in cursor: # type: ignore
     
     
 # Cerrar Conección a la base de datos
-conexionDb.close()
+finally:
+    conexiondb.is_connected()
+    conexiondb.close() # Se cerro la conexión as la BD.
+    print("La conexión ha finalizado.")
